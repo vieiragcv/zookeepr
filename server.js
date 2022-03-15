@@ -47,6 +47,13 @@ function filterByQuery(query, animalsArray) {
 /*-----------------------------------------------------------------------
 -                       GET DATA
 -----------------------------------------------------------------------*/
+app.get('/', (req, res) => {
+  let results = animals;
+  if (req.query) {
+    results = filterByQuery(req.query, results);
+  }
+  res.json(results);
+});
 
 app.get('/api/animals', (req, res) => {
   let results = animals;
