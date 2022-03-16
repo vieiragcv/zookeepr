@@ -117,6 +117,15 @@
         "hungry"
       ],
       "id": "11"
+    },
+    {
+      "name": "Pitty",
+      "species": "Dog",
+      "diet": "carnivore",
+      "personalityTraits": [
+        "goofy"
+      ],
+      "id": "12"
     }
   ]
 }
