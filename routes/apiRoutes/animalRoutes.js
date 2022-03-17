@@ -1,11 +1,20 @@
+const router = require('express').Router();
 const { filterByQuery, findById, createNewAnimal, validateAnimal } = require('../../lib/animals');
 const { animals } = require('../../data/animals');
 
 /*-----------------------------------------------------------------------
--                       GET DATA (ROUTES)
+-                       ROUTES
 -----------------------------------------------------------------------*/
 
-app.get('/', (req, res) => {
+/* router.get('/', (req, res) => {
+  let results = animals;
+  if (req.query) {
+    results = filterByQuery(req.query, results);
+  }
+  res.json(results);
+}); */
+
+router.get('/animals', (req, res) => {
   let results = animals;
   if (req.query) {
     results = filterByQuery(req.query, results);
@@ -13,15 +22,7 @@ app.get('/', (req, res) => {
   res.json(results);
 });
 
-app.get('/animals', (req, res) => {
-  let results = animals;
-  if (req.query) {
-    results = filterByQuery(req.query, results);
-  }
-  res.json(results);
-});
-
-app.get('/animals/:id', (req, res) => {
+router.get('/animals/:id', (req, res) => {
   const result = findById(req.params.id, animals);
   if (result) {
     res.json(result);
@@ -30,18 +31,25 @@ app.get('/animals/:id', (req, res) => {
   }
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '/public/index.html'));
-});
+/*-----------------------------------------------------------------------
+-                       POST
+-----------------------------------------------------------------------*/
 
-app.get('/animals', (req, res) => {
-  res.sendFile(path.join(__dirname, './public/animals.html'));
-});
+router.post('/api/animals', (req, res) => {
+  // set id based on what the next index of the array will be
+  req.body.id = animals.length.toString();
+ 
+  // if any data in req.body is incorrect, send 400 error back
+  if (!validateAnimal(req.body)) {
+   res.status(400).send('The animal is not properly formatted.');
+ } else {
+   const animal = createNewAnimal(req.body, animals);
+   res.json(animal);
+ }
+ });
 
-app.get('/zookeepers', (req, res) => {
-  res.sendFile(path.join(__dirname, './public/zookeepers.html'));
-});
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, './public/index.html'));
-});
+ /*-----------------------------------------------------------------------
+-                       EXPORT
+-----------------------------------------------------------------------*/
+ module.exports  = router;
